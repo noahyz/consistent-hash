@@ -29,7 +29,7 @@ func (r *NormalHashNode) GetWeight() int {
 }
 
 func TestCmpHash(t *testing.T) {
-	vnodeBaseNum := 1000
+	vnodeBaseNum := 100
 	ringFloorLimit := 1
 	nodes := []*NormalHashNode{
 		NewNormalHashNode("node_1", 1),
@@ -85,5 +85,5 @@ func TestCmpHash(t *testing.T) {
 		nodeResultMap1["node_4"], nodeResultMap1["node_5"], nodeResultMap1["node_6"])
 	t.Logf("disarray hash. node_1: %v, node_2: %v, node_3: %v, node_4: %v, node_5: %v, node_6: %v",
 		nodeResultMap2["node_1"], nodeResultMap2["node_2"], nodeResultMap2["node_3"],
-		nodeResultMap1["node_4"], nodeResultMap1["node_5"], nodeResultMap1["node_6"])
+		nodeResultMap2["node_4"], nodeResultMap2["node_5"], nodeResultMap2["node_6"])
 }

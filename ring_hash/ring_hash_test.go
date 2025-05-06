@@ -27,6 +27,26 @@ func (r *NormalHashNode) GetWeight() int {
 }
 
 func TestRingHash_NormalFunction(t *testing.T) {
+	vnodeBaseNum := 10
+	ringFloorLimit := 1
+	nodes := []*NormalHashNode{
+		NewNormalHashNode("node_1", 3),
+		NewNormalHashNode("node_2", 5),
+		NewNormalHashNode("node_3", 2),
+	}
+	hashFunc := utils.GetHashCode
+	obj := NewRingHash(vnodeBaseNum, ringFloorLimit, nodes, hashFunc)
+
+	key := "photoId_1"
+	results := obj.Get(key, 1, hashFunc)
+	if len(results) <= 0 {
+		t.Errorf("hash ring get empty result")
+		return
+	}
+	t.Logf("result: %v", results[0])
+}
+
+func TestRingHash_AllocateRatio(t *testing.T) {
 	vnodeBaseNum := 1000
 	ringFloorLimit := 1
 	nodes := []*NormalHashNode{

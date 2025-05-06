@@ -6,7 +6,10 @@ import (
 	"strconv"
 )
 
-const hashSlotNumber int = 1000
+const (
+	shrinkOfHashCode int = 54
+	hashSlotNumber   int = 1000
+)
 
 type pair struct {
 	hash uint64
@@ -46,7 +49,7 @@ func (r *DisarrayHash[T]) buildDisarrayHash(hashFunc func([]byte) uint64) {
 		vnodeCount := node.GetWeight() * r.vnodeBaseNum
 		for j := 0; j < vnodeCount; j++ {
 			vnodeKey := []byte(node.GetKey() + "_" + strconv.Itoa(j))
-			hashCode := hashFunc(vnodeKey) % uint64(hashSlotNumber)
+			hashCode := hashFunc(vnodeKey)
 			r.hashList = append(r.hashList, pair{hash: hashCode, idx: idx})
 		}
 	}
@@ -57,15 +60,20 @@ func (r *DisarrayHash[T]) buildDisarrayHash(hashFunc func([]byte) uint64) {
 	// 填充 slots: 对于每个槽位，找到顺时针的第一个vnode
 	n := len(r.hashList)
 	r.slots = make([]int, hashSlotNumber)
-	for idx, item := range r.hashList {
-		next := r.hashList[(idx+1)%n]
-		start := item.hash
-		end := next.hash
+	for pos, item := range r.hashList {
+		next := r.hashList[(pos+1)%n]
+		start := item.hash >> shrinkOfHashCode
+		end := next.hash >> shrinkOfHashCode
+		if start >= uint64(hashSlotNumber) || end >= uint64(hashSlotNumber) {
+			continue
+		}
 		// 区间 [start, end]
 		if start < end {
 			for j := start; j < end; j++ {
 				r.slots[j] = item.idx
 			}
+		} else if start == end {
+			r.slots[start] = item.idx
 		} else {
 			// wrap around
 			for j := start; j < uint64(hashSlotNumber); j++ {
@@ -91,7 +99,7 @@ func (r *DisarrayHash[T]) Get(key string, number int, hashFunc func([]byte) uint
 	if r.totalNodeNum <= r.ringFloorLimit {
 		return r.nodes[:number]
 	}
-	hashCode := hashFunc([]byte(key))
+	hashCode := hashFunc([]byte(key)) >> shrinkOfHashCode
 	results := make([]T, 0, number)
 	seen := make(map[string]struct{})
 	for i := 0; len(results) < number; i++ {
