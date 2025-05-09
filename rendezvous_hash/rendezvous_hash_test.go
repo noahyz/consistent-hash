@@ -122,7 +122,7 @@ func TestRendezvousHash_AddNode(t *testing.T) {
 	t.Logf("adjust num: %v\n", adjustNum)
 }
 
-func TestRendezvousHash_DeleteNode(t *testing.T) {
+func TestRendezvousHash_RemoveNode(t *testing.T) {
 	// 构建哈希
 	nodes := []*NormalHashNode{
 		NewNormalHashNode("node_1", 3),

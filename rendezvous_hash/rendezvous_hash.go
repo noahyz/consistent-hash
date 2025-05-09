@@ -75,12 +75,9 @@ func (r *RendezvousHash[T]) computeScore(node T) {
 	w := node.GetWeight()
 	for i := 0; i < r.slotNum; i++ {
 		h := r.hashScore(nodeKey, i)
-		if h <= 0 {
-			h = 1e-10
-		}
-		score := -math.Log(h) / float64(w)
-		r.scoreMap[nodeKey][i] = score
-		//fmt.Printf("node: %v, slot: %v, score: %v\n", nodeKey, i, score)
+		score := 1.0 / -math.Log(h)
+		r.scoreMap[nodeKey][i] = score * float64(w)
+		// fmt.Printf("node: %v, slot: %v, h: %v, score: %v\n", nodeKey, i, h, score)
 	}
 }
 
