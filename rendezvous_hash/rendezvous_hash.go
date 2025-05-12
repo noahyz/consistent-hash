@@ -36,13 +36,17 @@ func NewRendezvousHash[T models.HashNode](slotNum int, nodes []T, hashFunc func(
 	r.buildRendezvousHash()
 
 	keyMap := make(map[string]int64)
-	for _, item := range r.slotTable {
+	for idx, item := range r.slotTable {
+		if item == "node_3" {
+			fmt.Printf("%v ", idx)
+		}
 		if _, ok := keyMap[item]; !ok {
 			keyMap[item] = 1
 		} else {
 			keyMap[item]++
 		}
 	}
+	fmt.Println()
 	for key, num := range keyMap {
 		fmt.Printf("key: %v, num: %v\n", key, num)
 	}

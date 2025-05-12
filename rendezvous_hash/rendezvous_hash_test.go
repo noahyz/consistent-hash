@@ -47,11 +47,11 @@ func TestRendezvousHash_NormalFunction(t *testing.T) {
 
 func TestRendezvousHash_AllocateRatio(t *testing.T) {
 	nodes := []*NormalHashNode{
-		NewNormalHashNode("node_1", 3),
-		NewNormalHashNode("node_2", 6),
+		NewNormalHashNode("node_1", 30),
+		NewNormalHashNode("node_2", 69),
 		NewNormalHashNode("node_3", 1),
 	}
-	slotNum := 10000
+	slotNum := 1000
 	hashFunc := utils.GetHashCode
 	obj := NewRendezvousHash(slotNum, nodes, hashFunc)
 
@@ -167,4 +167,85 @@ func TestRendezvousHash_RemoveNode(t *testing.T) {
 		}
 	}
 	t.Logf("adjust num: %v\n", adjustNum)
+}
+
+func TestRendezvousHash_UpdateNode(t *testing.T) {
+	// 构建哈希
+	nodes := []*NormalHashNode{
+		NewNormalHashNode("node_1", 3),
+		NewNormalHashNode("node_2", 6),
+		NewNormalHashNode("node_3", 1),
+	}
+	slotNum := 1000
+	hashFunc := utils.GetHashCode
+	obj := NewRendezvousHash(slotNum, nodes, hashFunc)
+
+	// 第一次：文件与节点的对应关系
+	fileNodeMap1 := make(map[string]string)
+	for i := 0; i < 1000000; i++ {
+		key := "key_" + strconv.Itoa(i)
+		results := obj.Get(key, 1, hashFunc)
+		if len(results) <= 0 {
+			t.Fatal("hash ring get empty result")
+			return
+		}
+		fileNodeMap1[key] = results[0].GetKey()
+	}
+
+	// 第二次：文件与节点的对应关系
+	// 更新节点的权重
+	nodes2 := []*NormalHashNode{
+		NewNormalHashNode("node_1", 4),
+		NewNormalHashNode("node_2", 5),
+		NewNormalHashNode("node_3", 1),
+	}
+	slotNum2 := 1000
+	obj2 := NewRendezvousHash(slotNum2, nodes2, hashFunc)
+	fileNodeMap2 := make(map[string]string)
+	for i := 0; i < 1000000; i++ {
+		key := "key_" + strconv.Itoa(i)
+		results := obj2.Get(key, 1, hashFunc)
+		if len(results) <= 0 {
+			t.Fatal("hash ring get empty result")
+			return
+		}
+		fileNodeMap2[key] = results[0].GetKey()
+	}
+	// 文件变化
+	adjustNum := 0
+	for file1, node1 := range fileNodeMap1 {
+		node2 := fileNodeMap2[file1]
+		if node1 != node2 {
+			adjustNum++
+		}
+	}
+	t.Logf("adjust num: %v\n", adjustNum)
+
+	// 第三次: 文件与节点的对应关系
+	nodes3 := []*NormalHashNode{
+		NewNormalHashNode("node_1", 3),
+		NewNormalHashNode("node_2", 6),
+		NewNormalHashNode("node_3", 1),
+	}
+	slotNum3 := 1000
+	obj3 := NewRendezvousHash(slotNum3, nodes3, hashFunc)
+	fileNodeMap3 := make(map[string]string)
+	for i := 0; i < 1000000; i++ {
+		key := "key_" + strconv.Itoa(i)
+		results := obj3.Get(key, 1, hashFunc)
+		if len(results) <= 0 {
+			t.Fatal("hash ring get empty result")
+			return
+		}
+		fileNodeMap3[key] = results[0].GetKey()
+	}
+	// 文件变化
+	adjustNum3 := 0
+	for file1, node1 := range fileNodeMap1 {
+		node3 := fileNodeMap3[file1]
+		if node1 != node3 {
+			adjustNum3++
+		}
+	}
+	t.Logf("adjust num: %v\n", adjustNum3)
 }
