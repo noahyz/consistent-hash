@@ -47,12 +47,12 @@ func TestRingHash_NormalFunction(t *testing.T) {
 }
 
 func TestRingHash_AllocateRatio(t *testing.T) {
-	vnodeBaseNum := 1000
+	vnodeBaseNum := 1
 	ringFloorLimit := 1
 	nodes := []*NormalHashNode{
-		NewNormalHashNode("node_1", 3),
-		NewNormalHashNode("node_2", 5),
-		NewNormalHashNode("node_3", 2),
+		NewNormalHashNode("node_1", 1),
+		NewNormalHashNode("node_2", 1),
+		NewNormalHashNode("node_3", 998),
 	}
 	hashFunc := utils.GetHashCode
 	obj := NewRingHash(vnodeBaseNum, ringFloorLimit, nodes, hashFunc)
@@ -63,7 +63,7 @@ func TestRingHash_AllocateRatio(t *testing.T) {
 		"node_2": 0,
 		"node_3": 0,
 	}
-	for i := 0; i < 100000; i++ {
+	for i := 0; i < 1000000; i++ {
 		key := "key_" + strconv.Itoa(i)
 		results := obj.Get(key, 1, hashFunc)
 		if len(results) <= 0 {
