@@ -1,38 +1,19 @@
 package disarray_hash
 
 import (
+	"consistent-hash/models"
 	"consistent-hash/utils"
 	"strconv"
 	"testing"
 )
 
-type NormalHashNode struct {
-	key    string
-	weight int
-}
-
-func NewNormalHashNode(key string, weight int) *NormalHashNode {
-	return &NormalHashNode{
-		key:    key,
-		weight: weight,
-	}
-}
-
-func (r *NormalHashNode) GetKey() string {
-	return r.key
-}
-
-func (r *NormalHashNode) GetWeight() int {
-	return r.weight
-}
-
 func TestDisarrayHash_NormalFunction(t *testing.T) {
 	vnodeBaseNum := 10
 	ringFloorLimit := 1
-	nodes := []*NormalHashNode{
-		NewNormalHashNode("node_1", 3),
-		NewNormalHashNode("node_2", 5),
-		NewNormalHashNode("node_3", 2),
+	nodes := []*models.NormalHashNode{
+		models.NewNormalHashNode("node_1", 3, true),
+		models.NewNormalHashNode("node_2", 5, true),
+		models.NewNormalHashNode("node_3", 2, true),
 	}
 	hashFunc := utils.GetHashCode
 	obj := NewDisarrayHash(vnodeBaseNum, ringFloorLimit, nodes, hashFunc)
@@ -49,10 +30,10 @@ func TestDisarrayHash_NormalFunction(t *testing.T) {
 func TestDisarrayHash_AllocateRatio(t *testing.T) {
 	vnodeBaseNum := 1000
 	ringFloorLimit := 1
-	nodes := []*NormalHashNode{
-		NewNormalHashNode("node_1", 3),
-		NewNormalHashNode("node_2", 5),
-		NewNormalHashNode("node_3", 2),
+	nodes := []*models.NormalHashNode{
+		models.NewNormalHashNode("node_1", 3, true),
+		models.NewNormalHashNode("node_2", 5, true),
+		models.NewNormalHashNode("node_3", 2, true),
 	}
 	hashFunc := utils.GetHashCode
 	obj := NewDisarrayHash(vnodeBaseNum, ringFloorLimit, nodes, hashFunc)

@@ -2,7 +2,6 @@ package rendezvous_hash
 
 import (
 	"consistent-hash/models"
-	"fmt"
 	"math"
 	"strconv"
 )
@@ -35,21 +34,21 @@ func NewRendezvousHash[T models.HashNode](slotNum int, nodes []T, hashFunc func(
 	}
 	r.buildRendezvousHash()
 
-	keyMap := make(map[string]int64)
-	for idx, item := range r.slotTable {
-		if item == "node_3" {
-			fmt.Printf("%v ", idx)
-		}
-		if _, ok := keyMap[item]; !ok {
-			keyMap[item] = 1
-		} else {
-			keyMap[item]++
-		}
-	}
-	fmt.Println()
-	for key, num := range keyMap {
-		fmt.Printf("key: %v, num: %v\n", key, num)
-	}
+	//keyMap := make(map[string]int64)
+	//for idx, item := range r.slotTable {
+	//	if item == "node_3" {
+	//		fmt.Printf("%v ", idx)
+	//	}
+	//	if _, ok := keyMap[item]; !ok {
+	//		keyMap[item] = 1
+	//	} else {
+	//		keyMap[item]++
+	//	}
+	//}
+	//fmt.Println()
+	//for key, num := range keyMap {
+	//	fmt.Printf("key: %v, num: %v\n", key, num)
+	//}
 
 	return r
 }
@@ -91,6 +90,14 @@ func (r *RendezvousHash[T]) hashScore(nodeKey string, slot int) float64 {
 	// h 的取值范围是 [0, 2^64-1]。加1后是 [1, 2^64]
 	// 返回值的范围是 (0, 1]
 	return (float64(h) + 1) / float64(math.MaxUint64)
+}
+
+func (r *RendezvousHash[T]) getSlotTable() map[int]string {
+	slotTable := make(map[int]string)
+	for k, nodeKey := range r.slotTable {
+		slotTable[k] = nodeKey
+	}
+	return slotTable
 }
 
 func (r *RendezvousHash[T]) AddNode(node T) {
