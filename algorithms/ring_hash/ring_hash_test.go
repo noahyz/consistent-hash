@@ -1,38 +1,19 @@
 package ring_hash
 
 import (
+	"consistent-hash/models"
 	"consistent-hash/utils"
 	"strconv"
 	"testing"
 )
 
-type NormalHashNode struct {
-	key    string
-	weight int
-}
-
-func NewNormalHashNode(key string, weight int) *NormalHashNode {
-	return &NormalHashNode{
-		key:    key,
-		weight: weight,
-	}
-}
-
-func (r *NormalHashNode) GetKey() string {
-	return r.key
-}
-
-func (r *NormalHashNode) GetWeight() int {
-	return r.weight
-}
-
 func TestRingHash_NormalFunction(t *testing.T) {
 	vnodeBaseNum := 10
 	ringFloorLimit := 1
-	nodes := []*NormalHashNode{
-		NewNormalHashNode("node_1", 3),
-		NewNormalHashNode("node_2", 5),
-		NewNormalHashNode("node_3", 2),
+	nodes := []models.HashNode{
+		models.NewNormalHashNode("node_1", 3, true),
+		models.NewNormalHashNode("node_2", 5, true),
+		models.NewNormalHashNode("node_3", 2, true),
 	}
 	hashFunc := utils.GetHashCode
 	obj := NewRingHash(vnodeBaseNum, ringFloorLimit, nodes, hashFunc)
@@ -49,10 +30,10 @@ func TestRingHash_NormalFunction(t *testing.T) {
 func TestRingHash_AllocateRatio(t *testing.T) {
 	vnodeBaseNum := 1
 	ringFloorLimit := 1
-	nodes := []*NormalHashNode{
-		NewNormalHashNode("node_1", 1),
-		NewNormalHashNode("node_2", 1),
-		NewNormalHashNode("node_3", 998),
+	nodes := []models.HashNode{
+		models.NewNormalHashNode("node_1", 1, true),
+		models.NewNormalHashNode("node_2", 1, true),
+		models.NewNormalHashNode("node_3", 998, true),
 	}
 	hashFunc := utils.GetHashCode
 	obj := NewRingHash(vnodeBaseNum, ringFloorLimit, nodes, hashFunc)
@@ -80,10 +61,10 @@ func TestRingHash_AllocateRatio(t *testing.T) {
 func TestRingHash_UpdateNode(t *testing.T) {
 	vnodeBaseNum := 1000
 	ringFloorLimit := 1
-	nodes := []*NormalHashNode{
-		NewNormalHashNode("node_1", 3),
-		NewNormalHashNode("node_2", 6),
-		NewNormalHashNode("node_3", 1),
+	nodes := []models.HashNode{
+		models.NewNormalHashNode("node_1", 3, true),
+		models.NewNormalHashNode("node_2", 6, true),
+		models.NewNormalHashNode("node_3", 1, true),
 	}
 	hashFunc := utils.GetHashCode
 	obj := NewRingHash(vnodeBaseNum, ringFloorLimit, nodes, hashFunc)
@@ -102,10 +83,10 @@ func TestRingHash_UpdateNode(t *testing.T) {
 
 	// 第二次：文件与节点的对应关系
 	// 更新节点的权重
-	nodes2 := []*NormalHashNode{
-		NewNormalHashNode("node_1", 4),
-		NewNormalHashNode("node_2", 5),
-		NewNormalHashNode("node_3", 1),
+	nodes2 := []models.HashNode{
+		models.NewNormalHashNode("node_1", 4, true),
+		models.NewNormalHashNode("node_2", 5, true),
+		models.NewNormalHashNode("node_3", 1, true),
 	}
 	vnodeBaseNum2 := 1000
 	obj2 := NewRingHash(vnodeBaseNum2, ringFloorLimit, nodes2, hashFunc)
@@ -131,10 +112,10 @@ func TestRingHash_UpdateNode(t *testing.T) {
 
 	// 第三次：文件与节点的对应关系
 	// 更新节点的权重
-	nodes3 := []*NormalHashNode{
-		NewNormalHashNode("node_1", 3),
-		NewNormalHashNode("node_2", 6),
-		NewNormalHashNode("node_3", 1),
+	nodes3 := []models.HashNode{
+		models.NewNormalHashNode("node_1", 3, true),
+		models.NewNormalHashNode("node_2", 6, true),
+		models.NewNormalHashNode("node_3", 1, true),
 	}
 	vnodeBaseNum3 := 1000
 	obj3 := NewRingHash(vnodeBaseNum3, ringFloorLimit, nodes3, hashFunc)

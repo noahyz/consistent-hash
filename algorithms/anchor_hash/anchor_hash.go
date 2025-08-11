@@ -1,6 +1,9 @@
 package anchor_hash
 
-import "consistent-hash/utils"
+import (
+	"consistent-hash/utils"
+	"fmt"
+)
 
 type AnchorHash struct {
 	A []uint32
@@ -85,4 +88,28 @@ func (r *AnchorHash) RemoveBucket(b uint32) {
 	A[b] = N
 	W[L[b]], K[b] = W[N], W[N]
 	L[W[N]] = L[b]
+}
+
+func (r *AnchorHash) Print() {
+	fmt.Printf("\nA: ")
+	for _, item := range r.A {
+		fmt.Printf("%v ", item)
+	}
+	fmt.Printf("\nK: ")
+	for _, item := range r.K {
+		fmt.Printf("%v ", item)
+	}
+	fmt.Printf("\nW: ")
+	for _, item := range r.W {
+		fmt.Printf("%v ", item)
+	}
+	fmt.Printf("\nL: ")
+	for _, item := range r.L {
+		fmt.Printf("%v ", item)
+	}
+	fmt.Printf("\nR: ")
+	for _, item := range r.R {
+		fmt.Printf("%v ", item)
+	}
+	fmt.Println()
 }

@@ -41,3 +41,11 @@ func (r *NormalHashNode) SetWeight(weight int) {
 func (r *NormalHashNode) SetEnabled(isEnabled bool) {
 	r.isEnabled = isEnabled
 }
+
+func (r *NormalHashNode) DeepCopy() *NormalHashNode {
+	return &NormalHashNode{
+		key:       r.key,
+		weight:    r.weight,
+		isEnabled: r.isEnabled,
+	}
+}
