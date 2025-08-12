@@ -19,7 +19,11 @@ func TestRingHash_NormalFunction(t *testing.T) {
 	obj := NewRingHash(vnodeBaseNum, ringFloorLimit, nodes, hashFunc)
 
 	key := "photoId_1"
-	results := obj.Get(key, 1, hashFunc)
+	results, err := obj.Get(key, 1)
+	if err != nil {
+		t.Fatalf("ring hash err: %v", err)
+		return
+	}
 	if len(results) <= 0 {
 		t.Errorf("hash ring get empty result")
 		return
@@ -46,7 +50,11 @@ func TestRingHash_AllocateRatio(t *testing.T) {
 	}
 	for i := 0; i < 1000000; i++ {
 		key := "key_" + strconv.Itoa(i)
-		results := obj.Get(key, 1, hashFunc)
+		results, err := obj.Get(key, 1)
+		if err != nil {
+			t.Fatalf("ring hash err: %v", err)
+			return
+		}
 		if len(results) <= 0 {
 			t.Errorf("hash ring get empty result")
 		} else {
@@ -73,7 +81,11 @@ func TestRingHash_UpdateNode(t *testing.T) {
 	fileNodeMap1 := make(map[string]string)
 	for i := 0; i < 100000; i++ {
 		key := "key_" + strconv.Itoa(i)
-		results := obj.Get(key, 1, hashFunc)
+		results, err := obj.Get(key, 1)
+		if err != nil {
+			t.Fatalf("ring hash err: %v", err)
+			return
+		}
 		if len(results) <= 0 {
 			t.Fatal("hash ring get empty result")
 			return
@@ -93,7 +105,11 @@ func TestRingHash_UpdateNode(t *testing.T) {
 	fileNodeMap2 := make(map[string]string)
 	for i := 0; i < 100000; i++ {
 		key := "key_" + strconv.Itoa(i)
-		results := obj2.Get(key, 1, hashFunc)
+		results, err := obj2.Get(key, 1)
+		if err != nil {
+			t.Fatalf("ring hash err: %v", err)
+			return
+		}
 		if len(results) <= 0 {
 			t.Fatal("hash ring get empty result")
 			return
@@ -122,7 +138,11 @@ func TestRingHash_UpdateNode(t *testing.T) {
 	fileNodeMap3 := make(map[string]string)
 	for i := 0; i < 100000; i++ {
 		key := "key_" + strconv.Itoa(i)
-		results := obj3.Get(key, 1, hashFunc)
+		results, err := obj3.Get(key, 1)
+		if err != nil {
+			t.Fatalf("ring hash err: %v", err)
+			return
+		}
 		if len(results) <= 0 {
 			t.Fatal("hash ring get empty result")
 			return

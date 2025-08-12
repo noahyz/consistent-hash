@@ -11,12 +11,16 @@ type JumpHash[T models.HashNode] struct {
 	hashFunc func([]byte) uint64 // 哈希函数
 }
 
-func NewJumpHash[T models.HashNode](hashFunc func([]byte) uint64) *JumpHash[T] {
-	return &JumpHash[T]{
+func NewJumpHash[T models.HashNode](nodeList []T, hashFunc func([]byte) uint64) *JumpHash[T] {
+	obj := &JumpHash[T]{
 		nodeList: make([]T, 0),
 		nodeMap:  make(map[string]struct{}),
 		hashFunc: hashFunc,
 	}
+	for _, node := range nodeList {
+		obj.AddNode(node)
+	}
+	return obj
 }
 
 func (r *JumpHash[T]) generateJumpConsistentHash(keyHash uint64, numBuckets int) int {
@@ -27,8 +31,8 @@ func (r *JumpHash[T]) generateJumpConsistentHash(keyHash uint64, numBuckets int)
 	var j int64 = 0
 	for j < int64(numBuckets) {
 		b = j
-		key := keyHash*2862933555777941757 + 1
-		j = int64((float64(b+1) * float64(1<<31)) / float64((key>>33)+1))
+		keyHash = keyHash*2862933555777941757 + 1
+		j = int64((float64(b+1) * float64(1<<31)) / float64((keyHash>>33)+1))
 	}
 	return int(b)
 }
@@ -63,6 +67,9 @@ func (r *JumpHash[T]) Get(key string) (T, error) {
 	}
 	keyHash := r.hashFunc([]byte(key))
 	idx := r.generateJumpConsistentHash(keyHash, len(r.nodeList))
+	if idx < 0 || idx >= len(r.nodeList) {
+		return zero, fmt.Errorf("generate jumpHash idx error")
+	}
 	return r.nodeList[idx], nil
 }
 

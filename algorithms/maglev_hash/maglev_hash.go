@@ -20,14 +20,18 @@ type MaglevHash struct {
 	lookupTable    []string            // 查找表
 }
 
-func NewMaglevHash(tableSize int) *MaglevHash {
-	return &MaglevHash{
+func NewMaglevHash(nodeList []string, tableSize int) *MaglevHash {
+	obj := &MaglevHash{
 		nodeList:       make([]string, 0),
 		nodeMap:        make(map[string]struct{}),
 		preferenceList: make([]*NodePreference, 0),
 		tableSize:      tableSize,
 		lookupTable:    make([]string, tableSize),
 	}
+	for _, nk := range nodeList {
+		obj.AddNode(nk)
+	}
+	return obj
 }
 
 func (r *MaglevHash) hash(key string, seed int) uint64 {
@@ -82,14 +86,16 @@ func (r *MaglevHash) populateLookupTable() {
 				break
 			}
 			// 找到下一个可填充的位置
-			pos := r.getPermutationItem(r.preferenceList[i], r.preferenceList[i].nextIdx)
-			item := r.lookupTable[pos]
-			for r.preferenceList[i].nextIdx < r.tableSize && item != "" {
+			for r.preferenceList[i].nextIdx < r.tableSize {
+				pos := r.getPermutationItem(r.preferenceList[i], r.preferenceList[i].nextIdx)
+				if r.lookupTable[pos] == "" {
+					break
+				}
 				r.preferenceList[i].nextIdx++
 			}
 			// 如果还有可填充的位置，则填充
 			if r.preferenceList[i].nextIdx < r.tableSize {
-				pos = r.getPermutationItem(r.preferenceList[i], r.preferenceList[i].nextIdx)
+				pos := r.getPermutationItem(r.preferenceList[i], r.preferenceList[i].nextIdx)
 				r.lookupTable[pos] = r.nodeList[i]
 				r.preferenceList[i].nextIdx++
 				filledCount++
